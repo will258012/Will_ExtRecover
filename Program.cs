@@ -7,7 +7,7 @@ using Microsoft.Win32;
 using System.Linq;
 using System.Drawing;
 /// <summary>
-/// 文件或文件夹的输入
+/// 文件或目录的输入
 /// </summary>
 class Entry
 {
@@ -53,7 +53,6 @@ class Entry
 
                 foreach (var line in lines)
                 {
-                    // 可以添加更多的错误检查，例如确保扩展名格式正确
                     extensions.Add(line.Trim());
                 }
                 return extensions;
@@ -79,9 +78,9 @@ class Entry
 class Program
 {
     /// <summary>
-    /// 对文件或文件夹进行初步处理。
+    /// 对文件或目录进行初步处理。
     /// </summary>
-    /// <param name="path">文件或文件夹的路径。</param>
+    /// <param name="path">文件或目录的路径。</param>
     internal static void ProcessFileOrFolder(string path)
     {
         try
@@ -113,28 +112,35 @@ class Program
             MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
     }
-    private static void ProcessDirectory(string path)
+    /// <summary>
+    /// 对目录进行遍历，处理每个文件。
+    /// </summary>
+    /// <param name="path">目录的路径。</param>
+    /// <param name="dep">递归的深度。</param>
+    private static void ProcessDirectory(string path, int dep = 0)
     {
         // 处理当前目录中的所有文件
         foreach (var file in Directory.GetFiles(path))
         {
-            ProcessFile(file,true);
+            ProcessFile(file, true);
         }
 
         // 递归处理所有子目录
         foreach (var directory in Directory.GetDirectories(path))
         {
-            ProcessDirectory(directory);
+            ProcessDirectory(directory, dep + 1);
         }
-        MessageBox.Show("所有文件均已处理完毕！","提示", MessageBoxButtons.OK, MessageBoxIcon.Information,
-            MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+/*         MessageBox.Show("所有文件均已处理完毕！","提示", MessageBoxButtons.OK, MessageBoxIcon.Information,
+            MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly); */
+        //打开目录
+        if (dep == 0) OpenFile(path);
     }
 
     /// <summary>
     /// 处理文件。
     /// </summary>
     /// <param name="filePath">文件的路径。</param>
-    /// <param name="IsFolder">是否是文件夹读取模式。缺省值为false。</param>
+    /// <param name="IsFolder">是否是目录处理模式。缺省值为false。</param>
     private static void ProcessFile(string filePath, bool IsFolder = false)
     {
         try
@@ -143,7 +149,7 @@ class Program
             if (Path.HasExtension(filePath) &&
             (IsExtensionRegistered(Path.GetExtension(filePath).ToLower()) || Entry.Extensions.Contains(Path.GetExtension(filePath).ToLower())))
             {
-                if (!IsFolder)//文件夹处理模式中？
+                if (!IsFolder)//目录处理模式中？
                 {
                     OpenFile(filePath);
                 }
@@ -165,7 +171,7 @@ class Program
                 if (!string.IsNullOrEmpty(matchedExtension))
                 {
                     // 打开重命名后的文件
-                    if (!IsFolder)//文件夹处理模式中？
+                    if (!IsFolder)//目录处理模式中？
                     {
                         OpenFile(RenameFilewithNewFilePath(filePath, '.' + matchedExtension));
                     }
@@ -182,8 +188,9 @@ class Program
                         throw new Exception("不受支持的文件扩展名: " + Path.GetFullPath(filePath) + "\n" +
                         "如果需要处理它，请将其添加到配置文件中。");
                     }
-                    else{
-                    Console.Error.WriteLine("跳过不支持的文件：" + filePath);
+                    else
+                    {
+                        Console.Error.WriteLine("跳过不支持的文件：" + filePath);
                     }
                 }
             }
@@ -221,9 +228,9 @@ class Program
         File.Move(filePath, newFilePath);
     }
     /// <summary>
-    /// 打开文件。
+    /// 打开一个文件或目录。
     /// </summary>
-    /// <param name="filePath">文件的路径。</param>
+    /// <param name="filePath">文件或目录的路径。</param>
     private static void OpenFile(string filePath)
     {
         Process.Start("explorer.exe", filePath);
