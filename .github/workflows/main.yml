@@ -43,7 +43,7 @@ jobs:
         path: build_output/
     - name: Create test files
       run: |
-        mkdir test 
+        mkdir test > $nul
         cd test
         for ($i = 1; $i -le 500; $i++) {
           $filename = "test_" + $i + "_pptx"
@@ -55,7 +55,6 @@ jobs:
         }
         cd ../ 
         copy test test2
-        echo all test files set!
     - name: Run NET 7.0 application
       run: |
         Measure-Command {
@@ -65,8 +64,8 @@ jobs:
     - name: Run NETFramework 4.8 application
       run: |
         Measure-Command {
-          build_output/netframework4.8/Will_ExtRecover.exe test2/ > $nul
-          } | Tee-Object -FilePath net4_8.log
+          build_output/netframework48/Will_ExtRecover.exe test2/ > $nul
+          } | Tee-Object -FilePath net48.log
         echo NETFramework 4.8 application finished!
     - name: upload logs
       uses: actions/upload-artifact@v4
@@ -74,4 +73,4 @@ jobs:
         name: logs
         path: |
           net7.log
-          net4_8.log
+          net48.log
