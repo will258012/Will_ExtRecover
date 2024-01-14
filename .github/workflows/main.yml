@@ -53,8 +53,8 @@ jobs:
           $filename = "test_" + $i + "_xlsx"
           New-Item -ItemType File -Path $filename > $null
         }
-        copy test test2
         cd ../ 
+        copy test test2
         echo all test files set!
     - name: Run NET 7.0 application
       run: |
