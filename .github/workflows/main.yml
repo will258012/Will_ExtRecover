@@ -17,8 +17,10 @@ jobs:
         dotnet-version: '7.0.x'
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore -c Release -o build_output
+    - name: Build NET 7.0
+      run: dotnet build --no-restore -c Debug -o build_output/net7 -f net7.0-windows
+    - name: Build NETFramework 4.8
+      run: dotnet build --no-restore -c Debug -o build_output/netframework48 -f netframework4.8-windows
     - name: Test
       run: dotnet test --no-build
     - name: Upload build artifacts
@@ -26,3 +28,26 @@ jobs:
       with:
         name: compiled_files
         path: build_output/
+  test:
+    runs-on: windows-latest
+    needs: build
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '7.0.x'
+    - name: Create test files
+      run: |
+        mkdir test
+        for i in {1..300}
+          do
+             touch "test/test_$i_pptx"
+             touch "test/test_$i_docx"
+             touch "test/test_$i_xlsx"
+          done
+    - name: Run NET 7.0 application
+      run: build_output/net7/Will_ExtRecover.exe test/
+    - name: Run NETFramework 4.8 application
+      run: build_output/netframework48/Will_ExtRecover.exe test/
