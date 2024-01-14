@@ -38,15 +38,19 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '7.0.x'
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: compiled_files
+        path: build_output/
     - name: Create test files
       run: |
         mkdir test
-        for i in {1..300}
-          do
-             touch "test/test_$i_pptx"
-             touch "test/test_$i_docx"
-             touch "test/test_$i_xlsx"
-          done
+        for ($i = 1; $i -le 300; $i++) {
+          New-Item -ItemType File -Path "test/test_$i_pptx"
+          New-Item -ItemType File -Path "test/test_$i_docx"
+          New-Item -ItemType File -Path "test/test_$i_xlsx"
+        } 
     - name: Run NET 7.0 application
       run: build_output/net7/Will_ExtRecover.exe test/
     - name: Run NETFramework 4.8 application
