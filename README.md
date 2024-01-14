@@ -7,7 +7,7 @@
 
 本程序提供 Windows 7 (.NETFramework 4.8)版本和 Windows 8及以上 (.NET 7.0)版本。
 
-其中前者需安装[.NETFramework 4.8运行时](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer)，后者开箱即用。 
+### 其中前者需安装[.NETFramework 4.8运行时](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer)，后者开箱即用。 
 
 # 使用
 只需把文件或文件夹拖入到程序内，文件的扩展名会自动恢复。
