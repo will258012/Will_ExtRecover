@@ -32,8 +32,6 @@ jobs:
     runs-on: windows-latest
     needs: build
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -46,11 +44,14 @@ jobs:
     - name: Create test files
       run: |
         mkdir test
-        for ($i = 1; $i -le 300; $i++) {
-          New-Item -ItemType File -Path "test/test_$i_pptx"
-          New-Item -ItemType File -Path "test/test_$i_docx"
-          New-Item -ItemType File -Path "test/test_$i_xlsx"
-        } 
+        cd test
+        for ($i = 1; $i -le500; $i++) {
+               $filename = "test_" + $i + "_pptx"
+               New-Item -ItemType File -Path $filename
+               $filename = "test_" + $i + "_docx"
+               New-Item -ItemType File -Path $filename
+           }
+        cd ../ 
     - name: Run NET 7.0 application
       run: build_output/net7/Will_ExtRecover.exe test/
     - name: Run NETFramework 4.8 application
