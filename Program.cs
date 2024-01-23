@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.Linq;
-using System.Drawing;
+using Microsoft.Extensions.Configuration;
 /// <summary>
 /// 文件或目录的输入
 /// </summary>
@@ -42,32 +42,58 @@ class Entry
         string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         try
         {
-            if (File.Exists(filePath))
+            string FullPath = Path.GetFullPath(filePath);
+            if (!File.Exists(filePath))
             {
-                var extensions = new List<string>();
-                var lines = File.ReadAllLines(filePath);
-                if (lines.Length == 0)
-                {
-                    throw new Exception("配置文件为空!" + Path.GetFullPath(filePath));
-                }
-
-                foreach (var line in lines)
-                {
-                    extensions.Add(line.Trim());
-                }
-                return extensions;
+                throw new FileNotFoundException("配置文件不存在: " + FullPath);
             }
-            else throw new FileNotFoundException("配置文件不存在: " + Path.GetFullPath(filePath));
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddIniFile(fileName, optional: false, reloadOnChange: true);
+
+            IConfigurationRoot configuration = builder.Build();
+
+            var extensions = new List<string>();
+            IConfigurationSection extensionsSection = configuration.GetSection("Extensions");
+
+            if (!extensionsSection.GetChildren().Any())
+            {
+                throw new Exception("配置文件中不存在扩展名部分!\n请在配置文件中添加 [Extensions] 部分。" + FullPath);
+            }
+
+            // 将扩展名添加到列表中
+            foreach (var item in extensionsSection.GetChildren())
+            {
+                var extension = item.Value?.Trim();
+                if (!string.IsNullOrEmpty(extension))
+                {
+                    extensions.Add(extension ??
+                    throw new Exception("配置文件中的扩展名列表中有空值!" + FullPath));
+                }
+            }
+
+            // 检查扩展名列表是否为空
+            if (extensions.Count == 0)
+            {
+                throw new Exception("配置文件中的扩展名列表为空!" + FullPath);
+            }
+            return extensions;
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine("无法读取配置文件: " + e.Message);
+            Console.Error.WriteLine("无法读取配置文件: \n" + e.Message);
             MessageBox.Show(e.Message, "无法读取配置文件", MessageBoxButtons.OK, MessageBoxIcon.Error,
             MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-            File.Create(filePath).Close();
+
+            // 如果配置文件不存在，则创建一个新的
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+            }
             Process.Start("explorer.exe", filePath);
             Environment.Exit(1);
-            return new List<string>();
+            return null;
         }
     }
 }
@@ -107,7 +133,7 @@ class Program
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine("处理文件时出错: " + e.Message);
+            Console.Error.WriteLine("处理文件时出错: \n" + e.Message);
             MessageBox.Show(e.Message, "处理文件时出错", MessageBoxButtons.OK, MessageBoxIcon.Error,
             MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
@@ -130,8 +156,8 @@ class Program
         {
             ProcessDirectory(directory, dep + 1);
         }
-/*         MessageBox.Show("所有文件均已处理完毕！","提示", MessageBoxButtons.OK, MessageBoxIcon.Information,
-            MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly); */
+        /*         MessageBox.Show("所有文件均已处理完毕！","提示", MessageBoxButtons.OK, MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly); */
         //打开目录
         if (dep == 0) OpenFile(path);
     }
@@ -164,20 +190,20 @@ class Program
                 string fileName = Path.GetFileName(filePath).ToLower();
 
                 // 尝试获取匹配的扩展名（去掉点），如果没有找到，则返回 null
-                string? matchedExtension = Entry.Extensions
+                string matchedExtension = Entry.Extensions
                     .FirstOrDefault(ext => fileName.EndsWith(ext.Substring(1)))
-                    ?.Substring(1); // 使用 '?' 来安全地访问 Substring 方法
+                    .Substring(1);
 
                 if (!string.IsNullOrEmpty(matchedExtension))
                 {
                     // 打开重命名后的文件
                     if (!IsFolder)//目录处理模式中？
                     {
-                        OpenFile(RenameFilewithNewFilePath(filePath, '.' + matchedExtension));
+                        OpenFile(RenameFilewithNewFilePath(filePath, matchedExtension));
                     }
                     else
                     {
-                        RenameFile(filePath, '.' + matchedExtension);
+                        RenameFile(filePath, matchedExtension);
                         Console.WriteLine("处理文件：" + filePath);
                     }
                 }
@@ -185,7 +211,7 @@ class Program
                 {
                     if (!IsFolder)
                     {
-                        throw new Exception("不受支持的文件扩展名: " + Path.GetFullPath(filePath) + "\n" +
+                        throw new Exception("文件名中似乎有不受支持的扩展名: " + Path.GetFullPath(filePath) + "\n" +
                         "如果需要处理它，请将其添加到配置文件中。");
                     }
                     else
@@ -197,7 +223,7 @@ class Program
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine("处理文件时出错: " + e.Message);
+            Console.Error.WriteLine("处理文件时出错: \n" + e.Message);
             MessageBox.Show(e.Message, "处理文件时出错", MessageBoxButtons.OK, MessageBoxIcon.Error,
             MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
@@ -207,25 +233,49 @@ class Program
     /// 重命名文件，并返回新的文件路径。
     /// </summary>
     /// <param name="filePath">文件的路径。</param>
-    /// <param name="newExtension">新的扩展名。</param>
+    /// <param name="newExtension">新的扩展名。不需要带点</param>
     private static string RenameFilewithNewFilePath(string filePath, string newExtension)
     {
-        string newFilePath = Path.Combine(Path.GetDirectoryName(filePath),
-         Path.GetFileName(filePath) + newExtension);
-        File.Move(filePath, newFilePath);
-        return newFilePath;
+        try
+        {
+            string newFilePath = Path.Combine(Path.GetDirectoryName(filePath),
+                Path.GetFileName(filePath).Remove(Path.GetFileName(filePath).Length - newExtension.Length) + '.'
+                + newExtension);
+            if (File.Exists(newFilePath))
+            {
+                
+            }
+            File.Move(filePath, newFilePath);
+            return newFilePath;
+        }
+        catch (Exception e)
+        {
+            throw new Exception("文件重命名失败：" + e.Message);
+        }
     }
 
     /// <summary>
     /// 重命名文件。
     /// </summary>
     /// <param name="filePath">文件的路径。</param>
-    /// <param name="newExtension">新的扩展名。</param>
+    /// <param name="newExtension">新的扩展名。不需要带点</param>
     private static void RenameFile(string filePath, string newExtension)
     {
-        string newFilePath = Path.Combine(Path.GetDirectoryName(filePath),
-         Path.GetFileName(filePath) + newExtension);
-        File.Move(filePath, newFilePath);
+        try
+        {
+            string newFilePath = Path.Combine(Path.GetDirectoryName(filePath),
+                Path.GetFileName(filePath).Remove(Path.GetFileName(filePath).Length - newExtension.Length) + '.'
+                + newExtension);
+            if (File.Exists(newFilePath))
+            {
+
+            }
+            File.Move(filePath, newFilePath);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("文件重命名失败：" + e.Message);
+        }
     }
     /// <summary>
     /// 打开一个文件或目录。
