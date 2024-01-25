@@ -3,8 +3,10 @@ using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.Win32;
+using System.Drawing;
 using System.Linq;
+
+using Microsoft.Win32;
 using Microsoft.Extensions.Configuration;
 /// <summary>
 /// 文件或目录的输入
@@ -23,77 +25,83 @@ class Entry
         {
             foreach (var path in args)
             {
-                Program.ProcessFileOrFolder(path);
+                Program.ProcessFileOrFolder(path, args.Length > 1);
+            }
+            if (args.Length > 1)
+            {
+                MessageBox.Show("处理完毕！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information,
+                MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             }
         }
         else
         {
-            using var openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+
+            if (openFileDialog.ShowDialog().GetValueOrDefault())
             {
                 Program.ProcessFileOrFolder(openFileDialog.FileName);
             }
         }
     }
-    internal static readonly List<string> Extensions = LoadExtensions("Will_ExtRecover.ini");
-
-    private static List<string> LoadExtensions(string fileName)
-    {
-        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-        try
+    public static List<string> Extensions {
+        get
         {
-            string FullPath = Path.GetFullPath(filePath);
-            if (!File.Exists(filePath))
+            string fileName = "Will_ExtRecover.ini";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            try
             {
-                throw new FileNotFoundException("配置文件不存在: " + FullPath);
-            }
-
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddIniFile(fileName, optional: false, reloadOnChange: true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            var extensions = new List<string>();
-            IConfigurationSection extensionsSection = configuration.GetSection("Extensions");
-
-            if (!extensionsSection.GetChildren().Any())
-            {
-                throw new Exception("配置文件中不存在扩展名部分!\n请在配置文件中添加 [Extensions] 部分。" + FullPath);
-            }
-
-            // 将扩展名添加到列表中
-            foreach (var item in extensionsSection.GetChildren())
-            {
-                var extension = item.Value?.Trim();
-                if (!string.IsNullOrEmpty(extension))
+                string FullPath = Path.GetFullPath(filePath);
+                if (!File.Exists(filePath))
                 {
-                    extensions.Add(extension ??
-                    throw new Exception("配置文件中的扩展名列表中有空值!" + FullPath));
+                    throw new FileNotFoundException("配置文件不存在: " + FullPath);
                 }
-            }
 
-            // 检查扩展名列表是否为空
-            if (extensions.Count == 0)
-            {
-                throw new Exception("配置文件中的扩展名列表为空!" + FullPath);
-            }
-            return extensions;
-        }
-        catch (Exception e)
-        {
-            Console.Error.WriteLine("无法读取配置文件: \n" + e.Message);
-            MessageBox.Show(e.Message, "无法读取配置文件", MessageBoxButtons.OK, MessageBoxIcon.Error,
-            MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddIniFile(fileName, optional: false, reloadOnChange: true);
 
-            // 如果配置文件不存在，则创建一个新的
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath).Close();
+                IConfigurationRoot configuration = builder.Build();
+
+                var extensions = new List<string>();
+                IConfigurationSection extensionsSection = configuration.GetSection("Extensions");
+
+                if (!extensionsSection.GetChildren().Any())
+                {
+                    throw new Exception("配置文件中不存在扩展名部分!\n请在配置文件中添加 [Extensions] 部分。" + FullPath);
+                }
+
+                // 将扩展名添加到列表中
+                foreach (var item in extensionsSection.GetChildren())
+                {
+                    var extension = item.Value?.Trim();
+                    if (!string.IsNullOrEmpty(extension))
+                    {
+                        extensions.Add(extension??throw new NullReferenceException());
+                    }
+                }
+
+                // 检查扩展名列表是否为空
+                if (extensions.Count == 0)
+                {
+                    throw new Exception("配置文件中的扩展名列表为空!" + FullPath);
+                }
+                return extensions;
             }
-            Process.Start("explorer.exe", filePath);
-            Environment.Exit(1);
-            return null;
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("无法读取配置文件: \n" + e.Message);
+                MessageBox.Show(e.Message, "无法读取配置文件", MessageBoxButtons.OK, MessageBoxIcon.Error,
+                MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+
+                // 如果配置文件不存在，则创建一个新的
+                if (!File.Exists(filePath))
+                {
+                    File.Create(filePath).Close();
+                }
+                Process.Start("explorer.exe", filePath);
+                Environment.Exit(0);
+            }
+            return new List<string>();
         }
     }
 }
@@ -107,13 +115,13 @@ class Program
     /// 对文件或目录进行初步处理。
     /// </summary>
     /// <param name="path">文件或目录的路径。</param>
-    internal static void ProcessFileOrFolder(string path)
+    internal static void ProcessFileOrFolder(string path, bool IsMultiFiles = false)
     {
         try
         {
             if (File.Exists(path))
             {
-                ProcessFile(path);
+                ProcessFile(path, false, IsMultiFiles);
             }
             else if (Directory.Exists(path))
             {
@@ -167,7 +175,8 @@ class Program
     /// </summary>
     /// <param name="filePath">文件的路径。</param>
     /// <param name="IsFolder">是否是目录处理模式。缺省值为false。</param>
-    private static void ProcessFile(string filePath, bool IsFolder = false)
+    /// <param name="IsMultiFiles">是否是多文件处理模式。缺省值为false。</param>
+    private static void ProcessFile(string filePath, bool IsFolder = false, bool IsMultiFiles = false)
     {
         try
         {
@@ -175,7 +184,7 @@ class Program
             if (Path.HasExtension(filePath) &&
             (IsExtensionRegistered(Path.GetExtension(filePath).ToLower()) || Entry.Extensions.Contains(Path.GetExtension(filePath).ToLower())))
             {
-                if (!IsFolder)//目录处理模式中？
+                if (!IsFolder && !IsMultiFiles)//目录或多文件处理模式中？
                 {
                     OpenFile(filePath);
                 }
@@ -190,14 +199,14 @@ class Program
                 string fileName = Path.GetFileName(filePath).ToLower();
 
                 // 尝试获取匹配的扩展名（去掉点），如果没有找到，则返回 null
-                string matchedExtension = Entry.Extensions
+                string ?matchedExtension = Entry.Extensions
                     .FirstOrDefault(ext => fileName.EndsWith(ext.Substring(1)))
-                    .Substring(1);
+                    ?.Substring(1);
 
                 if (!string.IsNullOrEmpty(matchedExtension))
                 {
                     // 打开重命名后的文件
-                    if (!IsFolder)//目录处理模式中？
+                    if (!IsFolder && !IsMultiFiles)//目录或多文件处理模式中？
                     {
                         OpenFile(RenameFilewithNewFilePath(filePath, matchedExtension));
                     }
@@ -209,7 +218,7 @@ class Program
                 }
                 else
                 {
-                    if (!IsFolder)
+                    if (!IsFolder && !IsMultiFiles)//目录或多文件处理模式中？
                     {
                         throw new Exception("文件名中似乎有不受支持的扩展名: " + Path.GetFullPath(filePath) + "\n" +
                         "如果需要处理它，请将其添加到配置文件中。");
@@ -243,9 +252,12 @@ class Program
                 + newExtension);
             if (File.Exists(newFilePath))
             {
-                
+                ShowFileExistsDialog(filePath, newFilePath);
             }
-            File.Move(filePath, newFilePath);
+            else
+            {
+                File.Move(filePath, newFilePath);
+            }
             return newFilePath;
         }
         catch (Exception e)
@@ -268,15 +280,118 @@ class Program
                 + newExtension);
             if (File.Exists(newFilePath))
             {
-
+                ShowFileExistsDialog(filePath, newFilePath);
             }
-            File.Move(filePath, newFilePath);
+            else
+            {
+                File.Move(filePath, newFilePath);
+            }
         }
         catch (Exception e)
         {
             throw new Exception("文件重命名失败：" + e.Message);
         }
     }
+
+    public static DialogResult ShowFileExistsDialog(string filePath, string newFilePath)
+    {
+        try
+        {
+            Form prompt = new Form()
+            {
+                Width = 350,
+                Height = 300,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = "文件冲突",
+                StartPosition = FormStartPosition.CenterScreen,
+                Font = new Font("微软雅黑", 9),
+                ControlBox = false, // 设置为不可关闭
+                MinimizeBox = false, // 设置为不可最小化
+                MaximizeBox = false // 设置为不可最大化
+            };
+            Label textLabel = new Label()
+            {
+                Left = 50,
+                Top = 20,
+                Height = 150,
+                Width = 1000,
+                Text = $"准备将“{Path.GetFileName(filePath)}”文件重命名，\n但 “{Path.GetFileName(newFilePath)}” 已存在。\n请选择操作："
+            };
+            Button replaceButton = new Button()
+            {
+                Text = "替换目标中的文件 (R)",
+                Left = 50,
+                Width = 200,
+                Height = 40,
+                Top = 100,
+                DialogResult = DialogResult.Yes,
+                Font = new Font("微软雅黑", 10)
+            };
+            Button skipButton = new Button()
+            {
+                Text = "跳过重命名此文件 (S)",
+                Left = 50,
+                Width = 200,
+                Height = 40,
+                Top = 150,
+                DialogResult = DialogResult.No,
+                Font = new Font("微软雅黑", 10)
+            };
+            Button keepBothButton = new Button()
+            {
+                Text = "保留这两个文件 (C)",
+                Left = 50,
+                Width = 200,
+                Height = 40,
+                Top = 200,
+                DialogResult = DialogResult.Cancel,
+                Font = new Font("微软雅黑", 10)
+            };
+
+            replaceButton.Click += (sender, e) =>
+            {
+                File.Delete(newFilePath);
+                File.Move(filePath, newFilePath);
+                prompt.Close();
+            };
+            skipButton.Click += (sender, e) =>
+            {
+                prompt.Close();
+            };
+            keepBothButton.Click += (sender, e) =>
+            {
+                int number = 1;
+                string newFilePathChanged = Path.GetDirectoryName(newFilePath) + '\\' +
+                    Path.GetFileNameWithoutExtension(newFilePath)
+                    + '(' + number.ToString() + ')' +
+                    Path.GetExtension(newFilePath);
+                while (File.Exists(newFilePathChanged))
+                {
+                    number++;
+                    newFilePathChanged = Path.GetDirectoryName(newFilePath) + '\\' +
+                    Path.GetFileNameWithoutExtension(newFilePath)
+                    + '(' + number.ToString() + ')' +
+                    Path.GetExtension(newFilePath);
+                }
+                File.Move(filePath, newFilePathChanged);
+                prompt.Close();
+            };
+
+            prompt.Controls.Add(replaceButton);
+            prompt.Controls.Add(skipButton);
+            prompt.Controls.Add(keepBothButton);
+            prompt.Controls.Add(textLabel);
+            prompt.AcceptButton = replaceButton;
+
+            return prompt.ShowDialog();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("处理文件冲突时出错：" + e.Message);
+        }
+    }
+
+
     /// <summary>
     /// 打开一个文件或目录。
     /// </summary>
