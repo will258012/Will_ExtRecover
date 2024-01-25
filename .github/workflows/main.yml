@@ -14,13 +14,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '8.0.x'
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build NET 7.0
-      run: dotnet build --no-restore -c Debug -o build_output/net7 -f net7.0-windows
+    - name: Build NET 8.0
+      run: dotnet build --no-restore -c Debug -o build_output/net8 -f net8.0-windows
     - name: Build NETFramework 4.8
-      run: dotnet build --no-restore -c Debug -o build_output/netframework48 -f netframework4.8-windows
+      run: dotnet build --no-restore -c Debug -o build_output/netframework48 -f netframework4.8-windows7.0
     - name: Test
       run: dotnet test --no-build
     - name: Upload build artifacts
@@ -35,7 +35,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '8.0.x'
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
@@ -55,12 +55,12 @@ jobs:
         }
         cd ../ 
         copy test test2
-    - name: Run NET 7.0 application
+    - name: Run NET 8.0 application
       run: |
         Measure-Command {
           build_output/net7/Will_ExtRecover.exe test/ > $nul
-          } | Tee-Object -FilePath net7.log
-        echo NET 7.0 application finished!
+          } | Tee-Object -FilePath net8.log
+        echo NET 8.0 application finished!
     - name: Run NETFramework 4.8 application
       run: |
         Measure-Command {
@@ -72,5 +72,5 @@ jobs:
       with:
         name: logs
         path: |
-          net7.log
+          net8.log
           net48.log
