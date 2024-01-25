@@ -58,7 +58,7 @@ jobs:
     - name: Run NET 8.0 application
       run: |
         Measure-Command {
-          build_output/net7/Will_ExtRecover.exe test/ > $nul
+          build_output/net8/Will_ExtRecover.exe test/ > $nul
           } | Tee-Object -FilePath net8.log
         echo NET 8.0 application finished!
     - name: Run NETFramework 4.8 application
