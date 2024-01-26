@@ -3,4 +3,9 @@
   <PropertyGroup>
     <ActiveDebugFramework>net8.0-windows</ActiveDebugFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Update="FileExistsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
 </Project>
