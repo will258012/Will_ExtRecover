@@ -1,5 +1,5 @@
 ﻿using System.IO;
-namespace Will_ExtRecover
+namespace Will_ExtRecover.Dialogs
 {
     partial class FileExistsDialog
     {
@@ -38,38 +38,65 @@ namespace Will_ExtRecover
             // 
             // Replacebutton
             // 
+            this.Replacebutton.BackColor = System.Drawing.SystemColors.Window;
             this.Replacebutton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Replacebutton.Font = new System.Drawing.Font("微软雅黑", 10F);
-            this.Replacebutton.Location = new System.Drawing.Point(56, 98);
+            this.Replacebutton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            this.Replacebutton.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.Replacebutton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            this.Replacebutton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.Replacebutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Replacebutton.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.Replacebutton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(28)))), ((int)(((byte)(84)))));
+            this.Replacebutton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Replacebutton.Location = new System.Drawing.Point(45, 102);
             this.Replacebutton.Name = "Replacebutton";
-            this.Replacebutton.Size = new System.Drawing.Size(535, 64);
+            this.Replacebutton.Size = new System.Drawing.Size(535, 52);
             this.Replacebutton.TabIndex = 0;
-            this.Replacebutton.Text = "替换目标中的文件 (R)";
-            this.Replacebutton.UseVisualStyleBackColor = true;
+            this.Replacebutton.Text = "替换目标中的文件(R)";
+            this.Replacebutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Replacebutton.UseVisualStyleBackColor = false;
             this.Replacebutton.Click += new System.EventHandler(this.Replacebutton_Click);
             // 
             // Skipbutton
             // 
+            this.Skipbutton.BackColor = System.Drawing.SystemColors.Window;
             this.Skipbutton.DialogResult = System.Windows.Forms.DialogResult.Ignore;
-            this.Skipbutton.Font = new System.Drawing.Font("微软雅黑", 10F);
-            this.Skipbutton.Location = new System.Drawing.Point(56, 168);
+            this.Skipbutton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            this.Skipbutton.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.Skipbutton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            this.Skipbutton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.Skipbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Skipbutton.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.Skipbutton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(28)))), ((int)(((byte)(84)))));
+            this.Skipbutton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Skipbutton.Location = new System.Drawing.Point(45, 160);
             this.Skipbutton.Name = "Skipbutton";
-            this.Skipbutton.Size = new System.Drawing.Size(535, 64);
+            this.Skipbutton.Size = new System.Drawing.Size(535, 52);
             this.Skipbutton.TabIndex = 1;
-            this.Skipbutton.Text = "跳过此文件 (S)";
-            this.Skipbutton.UseVisualStyleBackColor = true;
+            this.Skipbutton.Text = "跳过此文件(S)";
+            this.Skipbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Skipbutton.UseVisualStyleBackColor = false;
             this.Skipbutton.Click += new System.EventHandler(this.Skipbutton_Click);
             // 
             // keepBothButton
             // 
+            this.keepBothButton.BackColor = System.Drawing.SystemColors.Window;
             this.keepBothButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.keepBothButton.Font = new System.Drawing.Font("微软雅黑", 10F);
-            this.keepBothButton.Location = new System.Drawing.Point(56, 238);
+            this.keepBothButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            this.keepBothButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.keepBothButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            this.keepBothButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.keepBothButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.keepBothButton.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.keepBothButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(28)))), ((int)(((byte)(84)))));
+            this.keepBothButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.keepBothButton.Location = new System.Drawing.Point(45, 218);
             this.keepBothButton.Name = "keepBothButton";
-            this.keepBothButton.Size = new System.Drawing.Size(535, 64);
+            this.keepBothButton.Size = new System.Drawing.Size(535, 52);
             this.keepBothButton.TabIndex = 2;
-            this.keepBothButton.Text = "保留这两个文件 (C)";
-            this.keepBothButton.UseVisualStyleBackColor = true;
+            this.keepBothButton.Text = "保留这两个文件(C)";
+            this.keepBothButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.keepBothButton.UseVisualStyleBackColor = false;
             this.keepBothButton.Click += new System.EventHandler(this.keepBothbutton_Click);
             // 
             // label1
@@ -77,18 +104,18 @@ namespace Will_ExtRecover
             this.label1.AutoEllipsis = true;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 10F);
-            this.label1.Location = new System.Drawing.Point(56, 18);
+            this.label1.Location = new System.Drawing.Point(23, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 25);
+            this.label1.Size = new System.Drawing.Size(78, 22);
             this.label1.TabIndex = 3;
-            this.label1.UseCompatibleTextRendering = true;
+            this.label1.Text = "文件信息";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Font = new System.Drawing.Font("微软雅黑", 10F);
-            this.checkBox1.Location = new System.Drawing.Point(56, 322);
+            this.checkBox1.Location = new System.Drawing.Point(45, 289);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(151, 26);
             this.checkBox1.TabIndex = 4;
@@ -100,7 +127,8 @@ namespace Will_ExtRecover
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(635, 381);
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ClientSize = new System.Drawing.Size(635, 334);
             this.ControlBox = false;
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
@@ -108,7 +136,7 @@ namespace Will_ExtRecover
             this.Controls.Add(this.Skipbutton);
             this.Controls.Add(this.Replacebutton);
             this.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FileExistsDialog";
