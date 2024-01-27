@@ -12,6 +12,7 @@
     <StartupObject>Will_ExtRecover.Entry</StartupObject>
     <SupportedOSPlatformVersion>7</SupportedOSPlatformVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
