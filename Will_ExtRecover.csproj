@@ -4,13 +4,14 @@
     <TargetFrameworks>netframework4.8-windows7.0;net8.0-windows</TargetFrameworks>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <PublishSingleFile>true</PublishSingleFile>
     <NeutralLanguage>zh-CN</NeutralLanguage>
-    <StartupObject>Entry</StartupObject>
+    <StartupObject>Will_ExtRecover.Entry</StartupObject>
     <SupportedOSPlatformVersion>7</SupportedOSPlatformVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
