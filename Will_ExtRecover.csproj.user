@@ -4,10 +4,10 @@
     <ActiveDebugFramework>net8.0-windows</ActiveDebugFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="FileExistsDialog.cs">
+    <Compile Update="Dialogs\FileExistsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="UnhandledExceptionDialog.cs">
+    <Compile Update="Dialogs\UnhandledExceptionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
