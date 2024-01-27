@@ -14,10 +14,6 @@ namespace Will_ExtRecover
         {
             this.FilePath = FilePath;
             this.NewFilePath = NewFilePath;
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.ControlBox = false;
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
             InitializeComponent();
             this.label1.Text = $"准备将“{Path.GetFileName(FilePath)}”文件重命名，\n但 “{Path.GetFileName(NewFilePath)}” 已存在。\n请选择操作：";
         }
@@ -53,7 +49,7 @@ namespace Will_ExtRecover
                     Path.GetFileNameWithoutExtension(NewFilePath) +
                     '(' + number.ToString() + ')' +
                     Path.GetExtension(NewFilePath);
-
+            
             while (File.Exists(newFilePathChanged()))
             {
                 number++;
@@ -74,7 +70,6 @@ namespace Will_ExtRecover
 
         private void FileExistsDialog_Load(object sender, EventArgs e)
         {
-            this.TopMost = true;
             if (IsApplyToAll && AllAction != null)
             {
                 switch (AllAction)

@@ -98,16 +98,23 @@ namespace Will_ExtRecover
             // 
             // FileExistsDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(635, 381);
+            this.ControlBox = false;
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.keepBothButton);
             this.Controls.Add(this.Skipbutton);
             this.Controls.Add(this.Replacebutton);
+            this.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FileExistsDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "文件冲突";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.FileExistsDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
