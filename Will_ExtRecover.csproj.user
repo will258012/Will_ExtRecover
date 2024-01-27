@@ -10,5 +10,11 @@
     <Compile Update="Dialogs\UnhandledExceptionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Dialogs\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\ChooseFilesOrFoldersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
