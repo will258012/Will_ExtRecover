@@ -6,17 +6,18 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
-/// <summary>
-/// 文件或目录的输入
-/// </summary>
+using Will_ExtRecover.Dialogs;
 namespace Will_ExtRecover
 {
+    /// <summary>
+    /// 文件或目录的传入
+    /// </summary>
     class Entry
     {
         [STAThread]
         private static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionTrapper);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionTrapper);//添加对未经处理异常的监测
             Application.EnableVisualStyles();
             FileOrFolderEntry(args);
         }
@@ -25,6 +26,7 @@ namespace Will_ExtRecover
         {
             if (args.Length > 0)
             {
+                Entry.args = args;
                 foreach (var path in args)
                 {
                     Program.ProcessFileOrFolder(path, args.Length > 1);
@@ -37,33 +39,19 @@ namespace Will_ExtRecover
             }
             else
             {
-                var openFileDialog = new Microsoft.Win32.OpenFileDialog();
-                openFileDialog.Multiselect = true;
-
-                if (openFileDialog.ShowDialog().GetValueOrDefault())
-                {
-                    if (openFileDialog.FileNames.Length > 1)
-                    {
-                        foreach (var path in openFileDialog.FileNames)
-                        {
-                            Program.ProcessFileOrFolder(path, true);
-                        }
-                        MessageBox.Show("处理完毕！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                    }
-                    else
-                    {
-                        Program.ProcessFileOrFolder(openFileDialog.FileName);
-                    }
-                }
+                using var chooseFilesOrFoldersDialog = new ChooseFilesOrFoldersDialog();
+                chooseFilesOrFoldersDialog.ShowDialog();
             }
         }
+        /// <summary>
+        /// 从配置文件获取的需处理扩展名名录。 
+        /// </summary>
         public static List<string> Extensions
         {
             get
             {
-                string fileName = "Will_ExtRecover.ini";
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+                string fileName = "Will_ExtRecover.ini";//配置文件名称
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);//配置文件所在路径。
                 try
                 {
                     string FullPath = Path.GetFullPath(filePath);
@@ -120,6 +108,11 @@ namespace Will_ExtRecover
                 return new List<string>();
             }
         }
+        /// <summary>
+        /// 当（不幸地）发生了未处理错误时执行的内容。
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
             Exception ex = (Exception)e.ExceptionObject;
@@ -131,6 +124,8 @@ namespace Will_ExtRecover
             UnhandledExceptionDialog.ShowDialog();
             Environment.Exit(1);
         }
+        /// <summary> 需处理文件名录。</summary>
+        public static string[] args;
     }
 
     /// <summary>
@@ -142,6 +137,7 @@ namespace Will_ExtRecover
         /// 对文件或目录进行初步处理。
         /// </summary>
         /// <param name="path">文件或目录的路径。</param>
+        /// <param name="IsMultiFiles">是否为多文件处理。缺省值为false。</param>
         internal static void ProcessFileOrFolder(string path, bool IsMultiFiles = false)
         {
             try
@@ -177,7 +173,7 @@ namespace Will_ExtRecover
         /// 对目录进行遍历，处理每个文件。
         /// </summary>
         /// <param name="path">目录的路径。</param>
-        /// <param name="dep">递归的深度。</param>
+        /// <param name="dep">递归的深度。缺省值为0。</param>
         private static void ProcessDirectory(string path, int dep = 0)
         {
             // 处理当前目录中的所有文件
@@ -269,7 +265,7 @@ namespace Will_ExtRecover
         /// 重命名文件，并返回新的文件路径。
         /// </summary>
         /// <param name="filePath">文件的路径。</param>
-        /// <param name="newExtension">新的扩展名。不需要带点</param>
+        /// <param name="newExtension">新的扩展名。不需要带点。</param>
         private static string RenameFilewithNewFilePath(string filePath, string newExtension)
         {
             try
@@ -279,7 +275,7 @@ namespace Will_ExtRecover
                     + newExtension);
                 if (File.Exists(newFilePath))
                 {
-                    using var FileExistsDialog = new FileExistsDialog(filePath, newFilePath);
+                    using var FileExistsDialog = new FileExistsDialog(filePath, newFilePath, Entry.args);
                     FileExistsDialog.ShowDialog();
                 }
                 else
@@ -298,7 +294,7 @@ namespace Will_ExtRecover
         /// 重命名文件。
         /// </summary>
         /// <param name="filePath">文件的路径。</param>
-        /// <param name="newExtension">新的扩展名。不需要带点</param>
+        /// <param name="newExtension">新的扩展名。不需要带点。</param>
         private static void RenameFile(string filePath, string newExtension)
         {
             try
@@ -308,7 +304,7 @@ namespace Will_ExtRecover
                     + newExtension);
                 if (File.Exists(newFilePath))
                 {
-                    using var FileExistsDialog = new FileExistsDialog(filePath, newFilePath);
+                    using var FileExistsDialog = new FileExistsDialog(filePath, newFilePath, Entry.args);
                     FileExistsDialog.ShowDialog();
                 }
                 else
@@ -323,12 +319,12 @@ namespace Will_ExtRecover
         }
 
         /// <summary>
-        /// 打开一个文件或目录。
+        /// 使用资源管理器打开内容。
         /// </summary>
-        /// <param name="filePath">文件或目录的路径。</param>
-        public static void OpenFile(string filePath)
+        /// <param name="ToOpen">需要打开的内容。</param>
+        public static void OpenFile(string ToOpen)
         {
-            Process.Start("explorer.exe", filePath);
+            Process.Start("explorer.exe", ToOpen);
         }
 
         /// <summary>
