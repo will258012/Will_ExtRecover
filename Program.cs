@@ -46,7 +46,7 @@ namespace Will_ExtRecover
         /// <summary>
         /// 从配置文件获取的需处理扩展名名录。 
         /// </summary>
-        public static List<string> Extensions
+        public static HashSet<string> Extensions
         {
             get
             {
@@ -66,7 +66,7 @@ namespace Will_ExtRecover
 
                     IConfigurationRoot configuration = builder.Build();
 
-                    var extensions = new List<string>();
+                    var extensions = new HashSet<string>();
                     IConfigurationSection extensionsSection = configuration.GetSection("Extensions");
 
                     if (!extensionsSection.GetChildren().Any())
@@ -80,7 +80,7 @@ namespace Will_ExtRecover
                         var extension = item.Value?.Trim();
                         if (!string.IsNullOrEmpty(extension))
                         {
-                            extensions.Add(extension ?? throw new NullReferenceException());
+                            extensions.Add(extension);
                         }
                     }
 
@@ -105,7 +105,7 @@ namespace Will_ExtRecover
                     Program.OpenFile(filePath);
                     Environment.Exit(0);
                 }
-                return new List<string>();
+                return [];
             }
         }
         /// <summary>
@@ -150,7 +150,7 @@ namespace Will_ExtRecover
                 }
                 else if (Directory.Exists(path))
                 {
-                    if (Directory.GetFiles(path).Length >= 0 || Directory.GetDirectories(path).Length >= 0)
+                    if (Directory.GetFiles(path).Length > 0 || Directory.GetDirectories(path).Length > 0)//如果目录非空
                     {
                         ProcessDirectory(path);
                     }
@@ -268,6 +268,7 @@ namespace Will_ExtRecover
         /// </summary>
         /// <param name="filePath">文件的路径。</param>
         /// <param name="newExtension">新的扩展名。不需要带点。</param>
+        /// <returns>返回重命名后的路径。</returns>
         private static string RenameFilewithNewFilePath(string filePath, string newExtension)
         {
             try
