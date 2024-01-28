@@ -6,12 +6,12 @@ namespace Will_ExtRecover.Dialogs
 {
     public partial class FileExistsDialog : Form
     {
-        string FilePath;
-        string NewFilePath;
+        private string FilePath;
+        private string NewFilePath;
         /// <summary> “全部执行此操作”复选框是否已被勾选。</summary>
-        static bool IsApplyToAll = false;
+        private static bool IsApplyToAll = false;
         /// <summary> “全部执行此操作”执行的操作名。</summary>
-        static string? AllAction = null;
+        private static string? AllAction = null;
         /// <summary>
         /// “文件冲突”窗口。
         /// </summary>
@@ -23,7 +23,7 @@ namespace Will_ExtRecover.Dialogs
             this.FilePath = FilePath;
             this.NewFilePath = NewFilePath;
             InitializeComponent();
-            this.label1.Text = String.Format("在“{0}”文件夹中：\n“{1}”对应重命名后的文件“{2}”已存在。", 
+            this.label1.Text = String.Format("在“{0}”文件夹中：\n“{1}”对应重命名后的文件“{2}”已存在。",
                 Path.GetDirectoryName(FilePath), Path.GetFileName(FilePath), Path.GetFileName(NewFilePath));
             this.checkBox1.Enabled = args.Length > 1;//如果是单文件即不显示“全部执行此操作”复选框
         }
@@ -37,7 +37,7 @@ namespace Will_ExtRecover.Dialogs
                 AllAction = "Replace";//替换
             }
             File.Delete(NewFilePath);
-            File.Move(FilePath, NewFilePath); 
+            File.Move(FilePath, NewFilePath);
             this.Close();
         }
 
@@ -66,7 +66,7 @@ namespace Will_ExtRecover.Dialogs
                     Path.GetFileNameWithoutExtension(NewFilePath) +
                     '(' + number.ToString() + ')' +
                     Path.GetExtension(NewFilePath);//生成更改过的重命名文件路径
-             // 每次循环，自增number，使文件名不重复
+                                                   // 每次循环，自增number，使文件名不重复
             while (File.Exists(newFilePathChanged()))
             {
                 number++;
@@ -75,10 +75,6 @@ namespace Will_ExtRecover.Dialogs
             File.Move(FilePath, newFilePathChanged());//重命名
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
         /// <summary>
         /// 当点击“全部执行此操作”复选框时执行的操作。
         /// </summary>
@@ -104,25 +100,6 @@ namespace Will_ExtRecover.Dialogs
                 this.Close();
             }
         }
-        /// <summary>
-        /// 按键操作逻辑。
-        /// </summary>
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            switch (keyData)
-            {
-                case Keys.R:
-                    Replacebutton.PerformClick();
-                    return true;
-                case Keys.S:
-                    Skipbutton.PerformClick();
-                    return true;
-                case Keys.C:
-                    keepBothButton.PerformClick();
-                    return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
+        private void label1_Click(object sender, EventArgs e) { }
     }
 }

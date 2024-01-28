@@ -47,14 +47,16 @@ namespace Will_ExtRecover.Dialogs
             this.Replacebutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Replacebutton.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.Replacebutton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(28)))), ((int)(((byte)(84)))));
+            this.Replacebutton.Image = global::Will_ExtRecover.Properties.Resources.ReplacebuttonIron;
             this.Replacebutton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.Replacebutton.Location = new System.Drawing.Point(45, 102);
             this.Replacebutton.Name = "Replacebutton";
             this.Replacebutton.Size = new System.Drawing.Size(535, 52);
             this.Replacebutton.TabIndex = 0;
-            this.Replacebutton.Text = "替换目标中的文件(R)";
+            this.Replacebutton.Text = "替换目标中的文件(&R)";
             this.Replacebutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.Replacebutton.UseVisualStyleBackColor = false;
+            this.Replacebutton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.Replacebutton.UseVisualStyleBackColor = true;
             this.Replacebutton.Click += new System.EventHandler(this.Replacebutton_Click);
             // 
             // Skipbutton
@@ -68,14 +70,16 @@ namespace Will_ExtRecover.Dialogs
             this.Skipbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Skipbutton.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.Skipbutton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(28)))), ((int)(((byte)(84)))));
+            this.Skipbutton.Image = global::Will_ExtRecover.Properties.Resources.SkipbuttonIron;
             this.Skipbutton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.Skipbutton.Location = new System.Drawing.Point(45, 160);
             this.Skipbutton.Name = "Skipbutton";
             this.Skipbutton.Size = new System.Drawing.Size(535, 52);
             this.Skipbutton.TabIndex = 1;
-            this.Skipbutton.Text = "跳过此文件(S)";
+            this.Skipbutton.Text = "跳过此文件(&S)";
             this.Skipbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.Skipbutton.UseVisualStyleBackColor = false;
+            this.Skipbutton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.Skipbutton.UseVisualStyleBackColor = true;
             this.Skipbutton.Click += new System.EventHandler(this.Skipbutton_Click);
             // 
             // keepBothButton
@@ -89,14 +93,16 @@ namespace Will_ExtRecover.Dialogs
             this.keepBothButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.keepBothButton.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.keepBothButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(28)))), ((int)(((byte)(84)))));
+            this.keepBothButton.Image = global::Will_ExtRecover.Properties.Resources.keepBothbuttonIron;
             this.keepBothButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.keepBothButton.Location = new System.Drawing.Point(45, 218);
             this.keepBothButton.Name = "keepBothButton";
             this.keepBothButton.Size = new System.Drawing.Size(535, 52);
             this.keepBothButton.TabIndex = 2;
-            this.keepBothButton.Text = "保留这两个文件(C)";
+            this.keepBothButton.Text = "保留这两个文件(&C)";
             this.keepBothButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.keepBothButton.UseVisualStyleBackColor = false;
+            this.keepBothButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.keepBothButton.UseVisualStyleBackColor = true;
             this.keepBothButton.Click += new System.EventHandler(this.keepBothbutton_Click);
             // 
             // label1
@@ -125,9 +131,11 @@ namespace Will_ExtRecover.Dialogs
             // 
             // FileExistsDialog
             // 
+            this.AcceptButton = this.Replacebutton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.CancelButton = this.keepBothButton;
             this.ClientSize = new System.Drawing.Size(635, 334);
             this.ControlBox = false;
             this.Controls.Add(this.checkBox1);
@@ -136,13 +144,12 @@ namespace Will_ExtRecover.Dialogs
             this.Controls.Add(this.Skipbutton);
             this.Controls.Add(this.Replacebutton);
             this.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FileExistsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "文件冲突";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.FileExistsDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
