@@ -4,6 +4,9 @@
     <ActiveDebugFramework>net8.0-windows</ActiveDebugFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Dialogs\ChooseFilesOrFoldersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Dialogs\FileExistsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -11,9 +14,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialogs\About.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Dialogs\ChooseFilesOrFoldersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
