@@ -71,7 +71,7 @@ namespace Will_ExtRecover.Dialogs
         /// <param name="e"></param>
         private void OpenFilebutton_Click(object sender, EventArgs e)
         {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog();//选择文件对话框
+            using var openFileDialog = new System.Windows.Forms.OpenFileDialog();//选择文件对话框
             openFileDialog.Multiselect = true; //多选
             openFileDialog.ShowDialog();
             if (openFileDialog.FileNames.Length > 0) //如果选择了文件
