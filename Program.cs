@@ -51,7 +51,7 @@ namespace Will_ExtRecover
             get
             {
                 string fileName = "Will_ExtRecover.ini";//配置文件名称
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);//配置文件所在路径。
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);//配置文件所在路径
                 try
                 {
                     string FullPath = Path.GetFullPath(filePath);
@@ -124,7 +124,9 @@ namespace Will_ExtRecover
             UnhandledExceptionDialog.ShowDialog();
             Environment.Exit(1);
         }
-        /// <summary> 需处理文件名录。</summary>
+        /// <summary> 
+        /// 需要处理的文件或目录的名录。
+        /// </summary>
         public static string[] args;
     }
 
@@ -229,7 +231,7 @@ namespace Will_ExtRecover
                     if (!string.IsNullOrEmpty(matchedExtension))
                     {
                         // 打开重命名后的文件
-                        if (!IsFolder && !IsMultiFiles)//目录或多文件处理模式中？
+                        if (!IsFolder && !IsMultiFiles && !IsFileExists)//目录/多文件处理模式中或遇到过文件冲突？
                         {
                             OpenFile(RenameFilewithNewFilePath(filePath, matchedExtension));
                         }
@@ -241,7 +243,7 @@ namespace Will_ExtRecover
                     }
                     else
                     {
-                        if (!IsFolder && !IsMultiFiles)//目录或多文件处理模式中？
+                        if (!IsFolder)//目录处理模式中？
                         {
                             throw new Exception("文件名中似乎有不受支持的扩展名: " + Path.GetFullPath(filePath) + "\n" +
                             "如果需要处理它，请将其添加到配置文件中。");
@@ -275,6 +277,7 @@ namespace Will_ExtRecover
                     + newExtension);
                 if (File.Exists(newFilePath))
                 {
+                    IsFileExists = true;
                     using var FileExistsDialog = new FileExistsDialog(filePath, newFilePath, Entry.args);
                     FileExistsDialog.ShowDialog();
                 }
@@ -304,6 +307,7 @@ namespace Will_ExtRecover
                     + newExtension);
                 if (File.Exists(newFilePath))
                 {
+                    IsFileExists = true;
                     using var FileExistsDialog = new FileExistsDialog(filePath, newFilePath, Entry.args);
                     FileExistsDialog.ShowDialog();
                 }
@@ -339,5 +343,9 @@ namespace Will_ExtRecover
                 return key != null;
             }
         }
+        /// <summary>
+        /// 是否遇到过文件冲突。
+        /// </summary>
+        private static bool IsFileExists = false;
     }
 }
