@@ -18,6 +18,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Dialogs\ChooseFilesOrFoldersDialog.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Dialogs\UnhandledExceptionDialog.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
