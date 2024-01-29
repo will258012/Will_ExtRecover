@@ -12,7 +12,7 @@ namespace Will_ExtRecover.Dialogs
         public UnhandledExceptionDialog(Exception ex)
         {
             InitializeComponent();
-            textBox1.Text = String.Format("异常类型：{0}\r\n异常消息：{1}\r\n 堆栈跟踪：\r\n {2} \r\n {3}",
+            textBox1.Text = String.Format("异常类型：{0}\r\n异常消息：{1}\r\n 堆栈跟踪：\r\n {2} \r\n",
                     ex.GetType().FullName, ex.Message, ex.StackTrace);//生成错误报告
             About aboutInstance = new About();
             label2.Text = aboutInstance.AssemblyTitle + " " + aboutInstance.AssemblyVersion;//获取版本号
